@@ -20,6 +20,7 @@ services:
       - zookeeper
 
   kafka-manager:
+    container_name: kafka-manager
     image: dockerkafka/kafka-manager
     environment:
     - ZK_HOSTS=zookeeper:2181
@@ -29,4 +30,4 @@ services:
       - zookeeper:zookeeper
       - kafka:kafka
     volumes:
-      - ./image/conf:/opt/kafka-manager-1.2.7/conf
+      - ./config:/opt/kafka-manager-1.2.7/conf
