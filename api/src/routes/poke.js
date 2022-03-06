@@ -1,5 +1,6 @@
 const pokeRouter = require('express').Router();
 const pokeService = require('../services/pokeService');
+const kafkaService = require('../services/kafkaService');
 const debug = require('debug')('palm-tree-api:poke');
 
 pokeRouter.get('/', function(req, res) {
@@ -27,6 +28,10 @@ pokeRouter.route('/:name/summary').get((request, response) => {
         try {
             let data = await pokeService.getByName(name);
             let summary = summarize(data);
+
+            let responses = await kafkaService.publish("get-poke", { name: name, data: summary } );
+            console.log(responses);
+
             response.send(summary);
         }
         catch (error) {
