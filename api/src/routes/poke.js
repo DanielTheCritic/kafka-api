@@ -29,8 +29,7 @@ pokeRouter.route('/:name/summary').get((request, response) => {
             let data = await pokeService.getByName(name);
             let summary = summarize(data);
 
-            let responses = await kafkaService.publish("get-poke", { name: name, data: summary } );
-            console.log(responses);
+            summary.publishDetails = await kafkaService.publish("get-poke", { name: name, data: summary } );
 
             response.send(summary);
         }
