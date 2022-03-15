@@ -1,10 +1,10 @@
 const express = require('express');
 const morgan = require('morgan');
 const debug = require('debug')('palm-tree-api');
-const indexRouter = require('./src/routes/index');
-const pokeRouter = require('./src/routes/poke');
+const indexRouter = require('./routes/index');
+const pokeRouter = require('./routes/poke');
 
-const port = 9999;
+const port = process.env.PORT || 9999;
 const app = express();
 
 app.use(morgan('tiny'));

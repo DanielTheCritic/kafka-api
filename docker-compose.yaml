@@ -38,3 +38,9 @@ services:
     image: danielthecritic/palm-tree-api:latest
     ports:
       - 9999:9999
+
+  kafka-api:
+    container_name: kafka-api
+    image: danielthecritic/kafka-api:latest
+    ports:
+      - 9998:9998

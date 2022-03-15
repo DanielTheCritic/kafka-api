@@ -1,16 +1,16 @@
 {
-  "name": "palm-tree-api",
+  "name": "kafka-api",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "nodemon app.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.26.0",
+    "body-parser": "^1.19.2",
     "debug": "^4.3.3",
     "express": "^4.17.3",
     "kafkajs": "^1.16.0",
@@ -21,7 +21,9 @@
     "restartable": "rs",
     "delay": 2500,
     "env": {
-      "PORT": 19999
+      "PORT": 19998,
+      "KAFKA_BROKER": "localhost:9092",
+      "KAFKA_CLIENTID": "kafka-api"
     }
   }
 }
