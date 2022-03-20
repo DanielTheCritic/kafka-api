@@ -1,5 +1,5 @@
 # scaling-palm-tree
-A event-driven POC using Kafka, Node JS and React
+An API created in Node JS using Nest exposing CRUD endpoints to manage Kafka.
 
 # Features
-Integration with the Poke API
+
