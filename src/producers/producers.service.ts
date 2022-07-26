@@ -3,13 +3,13 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { KafkaIntegrationService } from 'src/kafka-integration/kafka-integration-service';
 import { ProducerBatchMessageResult } from './dto/producer-batch-message-result.dto';
 import { ProducerBatchMessage } from './dto/producer-batch-message.dto';
 import { ProducerMessageResult } from './dto/producer-message-result.dto';
 import { ProducerMessage } from './dto/producer-message.dto';
 import { ProducerBatchMessageResultValue } from './dto/producer-batch-message-result-value.dto';
 import { KafkaJSNonRetriableError } from 'kafkajs';
+import { KafkaIntegrationService } from '../kafka-integration/kafka-integration-service';
 
 @Injectable()
 export class ProducersService {
