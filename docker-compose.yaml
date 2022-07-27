@@ -28,33 +28,25 @@ services:
       - KAFKA_BROKERS=localhost:9092
 
   dev:
-    container_name: kafka-api-dev
-    image: kafka-api-dev:1.0.0
     build:
-        context: .
-        target: development
-        dockerfile: ./Dockerfile
-    command: npm run start:debug
-    ports:
-        - 3000:3000
-        - 9229:9229
+      context: .
+      dockerfile: ./Dockerfile-dev
     volumes:
-        - .:/usr/src/app
-        - /usr/src/app/node_modules
-    restart: unless-stopped
+      - ./src:/app/src
+    ports:
+      - 3000:3000
+    env_file:
+      - .env.stage.dev
+
   prod:
-    container_name: kafka-api
-    image: kafka-api:1.0.0
     build:
-        context: .
-        target: production
-        dockerfile: ./Dockerfile
-    command: npm run start:prod
-    ports:
-        - 3000:3000
-        - 9229:9229
+      context: .
+      dockerfile: ./Dockerfile
     volumes:
-        - .:/usr/src/app
-        - /usr/src/app/node_modules
-    restart: unless-stopped
+      - ./src:/app/src
+    ports:
+      - 3000:3000
+    env_file:
+      - .env.stage.prod
+    
       
