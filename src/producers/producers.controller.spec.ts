@@ -29,4 +29,20 @@ describe('ProducersController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
+
+  describe('publish', () => {
+    it('calls ProducersService.publish and returns the result.', async () => {
+      expect(producersService.publish).not.toHaveBeenCalled();
+
+      producersService.publish.mockResolvedValue('someValue');
+      const result = await producersService.publish({
+        topic: 'test-topic',
+        key: 'test-key',
+        value: 'test-value',
+      });
+
+      expect(producersService.publish).toHaveBeenCalled();
+      expect(result).toEqual('someValue');
+    });
+  });
 });

@@ -1,38 +1,28 @@
-FROM node:18-alpine AS development
+FROM node:18-alpine AS builder
 
-ARG STAGE=dev
-ENV STAGE=${STAGE}
+USER node
+WORKDIR '/home/node'
 
-WORKDIR /usr/src/app
+ENV NODE_ENV build
 
-COPY package*.json ./
+COPY package*.json yarn.lock .npmrc ./
+RUN yarn install --frozen-lockfile
 
-RUN npm install glob rimraf
+COPY --chown=node:node . .
+RUN yarn build \
+    && yarn install --production --ignore-scripts --prefer-offline
 
-RUN npm install --only=development
+FROM node:18-alpine
 
-COPY . .
+ENV NODE_ENV production
 
-RUN npm run build
+USER node
+WORKDIR '/home/node'
 
-FROM node:18-alpine as production
-
-ARG NODE_ENV=production
-ENV NODE_ENV=${NODE_ENV}
-
-ARG STAGE=prod
-ENV STAGE=${STAGE}
-
-WORKDIR /usr/src/app
-
-COPY package*.json ./
-
-RUN npm install --only=production
-
-COPY . .
-
-COPY --from=development /usr/src/app/dist ./dist
+COPY --from=builder --chown=node:node /home/node/package*.json ./
+COPY --from=builder --chown=node:node /home/node/node_modules ./node_modules/
+COPY --from=builder --chown=node:node /home/node/dist/ ./dist/
 
 EXPOSE 19998
 
-CMD ["node", "dist/main"]
+CMD ["yarn", "start:prod"]
