@@ -3,8 +3,9 @@ FROM node:18-alpine AS builder
 WORKDIR /app
 
 ENV NODE_ENV development
+ENV STAGE dev
 
-COPY package*.json yarn.lock .npmrc ./
+COPY package*.json ./
 RUN yarn
 
 FROM node:18-alpine
