@@ -16,8 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x, 18.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        node-version: [18.x]
 
     steps:
     - uses: actions/checkout@v3
@@ -25,8 +24,21 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-        path: client
-    - run: yarn install --frozen-lockfile
-    - run: yarn run build
-    - run: yarn test
+    
+    - name: Run Tests
+      run: |
+        npm install
+        npm run build
+        npm test
+    
+    - name: Login to Docker Hub
+      run: docker login --username "${{ secrets.DOCKER_USERNAME }}" --password "${{ secrets.DOCKER_PASSWORD }}"
+
+    - name: Build Docker Image
+      run: docker build . --file Dockerfile --tag DanielTheCritic/kafka-api
+
+    - name: Docker Push Image
+      run: docker push DanielTheCritic/kafka-api
+
+      env:
+        CI: true
