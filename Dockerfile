@@ -5,7 +5,7 @@ WORKDIR '/home/node'
 
 ENV NODE_ENV build
 
-COPY package*.json yarn.lock .npmrc ./
+COPY package*.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 
 COPY --chown=node:node . .
