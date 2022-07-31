@@ -49,7 +49,7 @@ jobs:
       run: |
         docker tag danieljonsansom/kafka-api kafka-api:${{ steps.version-bump.outputs.newTag }}
         docker push
-        docker build . --file Dockerfile --tag danieljonsansom/kafka-api:${{ steps.version-bump.outputs.newTag }}
+        docker build . --file Dockerfile --tag danieljonsansom/kafka-api:0.0.7
 
     - name: Docker Push Image
       run: docker push danieljonsansom/kafka-api
