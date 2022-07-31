@@ -24,18 +24,29 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-    
+
     - name: Run Tests
       run: |
         npm install
         npm run build
         npm test
+
+    - name: Automated Version Bump                  # This action step reads and updates the version number acc to commit message
+      id: version-bump
+      uses: 'phips28/gh-action-bump-version@master'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Output Step                             # Optional: Prints the new version
+      env:
+        NEW_TAG: ${{ steps.version-bump.outputs.newTag }}
+      run: echo "new tag $NEW_TAG"
     
     - name: Login to Docker Hub
       run: docker login --username "${{ secrets.DOCKER_USERNAME }}" --password "${{ secrets.DOCKER_PASSWORD }}"
 
     - name: Build Docker Image
-      run: docker build . --file Dockerfile --tag danieljonsansom/kafka-api:${{github.ref_name}}
+      run: docker build . --file Dockerfile --tag danieljonsansom/kafka-api:${{ steps.version-bump.outputs.newTag }}
 
     - name: Docker Push Image
       run: docker push danieljonsansom/kafka-api
