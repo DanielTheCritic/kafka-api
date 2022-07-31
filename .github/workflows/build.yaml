@@ -35,7 +35,7 @@ jobs:
       run: docker login --username "${{ secrets.DOCKER_USERNAME }}" --password "${{ secrets.DOCKER_PASSWORD }}"
 
     - name: Build Docker Image
-      run: docker build . --file Dockerfile --tag danieljonsansom/kafka-api
+      run: docker build . --file Dockerfile --tag danieljonsansom/kafka-api:${{github.ref_name}
 
     - name: Docker Push Image
       run: docker push danieljonsansom/kafka-api
