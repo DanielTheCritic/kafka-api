@@ -1,0 +1,78 @@
+version: '3.8'
+services:
+  broker:
+    container_name: broker
+    image: docker.redpanda.com/vectorized/redpanda:v21.11.15
+    networks:
+      default:
+        aliases:
+          - schema-registry
+    healthcheck:
+      test: 'test -f /etc/redpanda/ok || (curl --fail http://localhost:9644/v1/status/ready && touch /etc/redpanda/ok)'
+      interval: 1s
+      timeout: 3s
+      retries: 120
+    tty: true
+    stdin_open: true
+    command:
+      - redpanda
+      - start
+      - --smp
+      - '1'
+      - --reserve-memory
+      - 0M
+      - --overprovisioned
+      - --node-id
+      - '1'
+      - --kafka-addr
+      - PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
+      - --advertise-kafka-addr
+      - PLAINTEXT://broker:9092,OUTSIDE://broker:29092
+      - --pandaproxy-addr
+      - PLAINTEXT://broker:28082,OUTSIDE://broker:8082
+    ports:
+      - 8081:8081
+      - 8082:8082
+      - 9092:9092
+      - 9101:9101
+      - 28082:28082
+      - 29092:29092
+
+  kowl:
+    image: quay.io/cloudhut/kowl:latest
+    container_name: kowl
+    ports:
+      - "8088:8080"
+    depends_on:
+      broker:
+        condition: service_healthy
+    environment:
+      KAFKA_BROKERS: broker:9092
+      KAFKA_SCHEMAREGISTRY_URLS: http://broker:8081
+      KAFKA_SCHEMAREGISTRY_ENABLED: 'true'
+
+
+  kafka-api:
+    build:
+      context: .
+      dockerfile: ./Dockerfile-dev
+    volumes:
+      - ./src:/app/src
+    ports:
+      - 11770:11770
+    env_file:
+      - .env.stage.dev
+
+#
+#  prod:
+#    build:
+#      context: .
+#      dockerfile: ./Dockerfile
+#    volumes:
+#      - ./src:/app/src
+#    ports:
+#      - 3000:3000
+#    env_file:
+#      - .env.stage.prod
+    
+      

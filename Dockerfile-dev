@@ -1,0 +1,20 @@
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+ENV NODE_ENV development
+ENV STAGE dev
+
+COPY package*.json ./
+RUN yarn
+
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY --from=builder /app .
+COPY . .
+
+EXPOSE 19998
+
+CMD ["yarn", "start:dev"]
